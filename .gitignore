@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-node_modules/
-.env
-=======
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -29,18 +26,38 @@ node_modules/
 *.pem
 
 # debug
+=======
+# Node / Next.js
+node_modules/
+.next/
+out/
+.vercel/
+>>>>>>> bd23a65 ( Initial commit)
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
+pnpm-lock.yaml
+package-lock.json
 
-# env files (can opt-in for committing if needed)
-.env*
+# Env & local config
+.env
+.env.local
+.env.*.local
 
-# vercel
-.vercel
+# OS cruft
+.DS_Store
 
+<<<<<<< HEAD
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 >>>>>>> 514ee10 (Initial commit from Create Next App)
+=======
+# Tiles / large data (keep these out of git)
+public/tiles/
+scripts/input/
+
+# Prisma
+# (keep migrations and schema, they are small & important)
+# prisma/migrations/  <-- DO track (default)
+>>>>>>> bd23a65 ( Initial commit)

@@ -12,6 +12,10 @@ While your cell phone screen can display about three million pixels of informati
 - 📊 Database-driven asset management with Prisma
 - 🎨 Modern UI with Tailwind CSS
 
+
+## Usage
+
+
 ## Setup
 
 ### Prerequisites

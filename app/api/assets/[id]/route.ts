@@ -8,9 +8,7 @@ export async function GET(
   try {
     const asset = await prisma.asset.findUnique({
       where: { id: params.id },
-      include: {
-        labels: true
-      }
+      include: { labels: false }
     })
 
     if (!asset) {

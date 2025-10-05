@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Sky Map - Real-time Space Tracker</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        #globeViz {
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+        #globeViz:active {
+            cursor: grabbing;
+        }
+        .info-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.9);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 1000;
+            border: 1px solid #444;
+            min-width: 300px;
+            backdrop-filter: blur(10px);
+        }
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 90%;
+        }
+        .control-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .control-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
+        }
+        .control-btn.active {
+            background: #4af;
+            box-shadow: 0 0 10px #4af;
+        }
+        #error {
+            display: none;
+            background: #ff4444;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
+            text-align: center;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #333;
+            font-size: 12px;
+        }
+        .legend {
+            margin-top: 10px;
+            font-size: 11px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+        h3 {
+            margin: 0 0 10px 0;
+            color: #4af;
+            font-size: 16px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            background-color: #111;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #444;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: white;
+        }
+        .comments-section {
+            margin-top: 20px;
+        }
+        .comment {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .points {
+            color: #4af;
+            font-weight: bold;
+        }
+        .comment-actions button {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 2px 8px;
+            margin-right: 5px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .add-comment {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+        }
+        
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 11px;
+            color: #aaa;
+            max-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-panel">
+            <h3>🌌 Interactive Sky Map</h3>
+            <div class="stat-item">
+                <span>📍 Location:</span>
+                <span id="locationInfo">Detecting...</span>
+            </div>
+            <div class="stat-item">
+                <span>📡 Coordinates:</span>
+                <span id="coordinatesInfo">-</span>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <span>⭐ Stars:</span>
+                    <span id="starCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>🔭 Constellations:</span>
+                    <span id="constellationCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>🛰️ Satellites:</span>
+                    <span id="satelliteCount">0</span>
+                </div>
+                <div class="stat-item">
+                    <span>🪐 Planets:</span>
+                    <span id="planetCount">0</span>
+                </div>
+            </div>
+            
+            <div class="legend">
+                <div>✨ Click any object for info & comments</div>
+                <div>🟢 Green: Constellation lines</div>
+                <div>🟡 Yellow: Satellites</div>
+                <div>🔴 Red: Planets & Sun</div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            🖱️ Drag to rotate<br>
+            🔍 Scroll to zoom<br>
+            ✨ Click objects for info
+        </div>
+        
+        <div class="controls">
+            <button class="control-btn active" onclick="toggleStars()" id="toggleStarsBtn">⭐ Stars</button>
+            <button class="control-btn active" onclick="toggleConstellations()" id="toggleConstellationsBtn">🔭 Constellations</button>
+            <button class="control-btn active" onclick="toggleSatellites()" id="toggleSatellitesBtn">🛰️ Satellites</button>
+            <button class="control-btn active" onclick="togglePlanets()" id="togglePlanetsBtn">🪐 Planets</button>
+            <button class="control-btn active" onclick="toggleRotation()" id="toggleRotationBtn">⏸️ Pause</button>
+            <button class="control-btn" onclick="focusOnMyLocation()">📍 My Location</button>
+            <button class="control-btn" onclick="resetView()">🔄 Reset</button>
+        </div>
+        
+        <div id="globeViz"></div>
+        <div id="error"></div>
+        <div id="loading">
+            <div>🛰️ Detecting your location...</div>
+            <div>Loading space data...</div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <div id="infoModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Main script -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

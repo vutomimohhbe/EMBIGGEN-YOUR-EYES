@@ -1,8 +1,8 @@
 
-# Cassini Grand Finale Explorer
->>>>>>> c4a5660 (This is the first commit)
+# Embiggen your eyes - Data imaging tool 
 
-A Next.js application for exploring high-resolution astronomical images with deep zoom capabilities.
+![Embiggen Your Eyes Logo](./logo.png)
+While your cell phone screen can display about three million pixels of information and your eye can receive more than ten million pixels, NASA images from space are even bigger! NASA’s space missions continue to push the boundaries of what is technologically possible, providing high-resolution images and videos of Earth, other planets, and space with billions or even trillions of pixels. 
 
 ## Features
 

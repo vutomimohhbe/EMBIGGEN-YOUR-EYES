@@ -22,18 +22,43 @@ model Asset {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   labels     Label[]
+  comments   Comment[]
 }
 
 model Label {
+  id         String   @id @default(cuid())
+  assetId    String
+  userId     String?
+  x          Float
+  y          Float
+  w          Float
+  h          Float
+  title      String
+  note       String?
+  category   String?  // New: Category for the annotation
+  confidence Float?   // New: AI confidence score
+  createdAt  DateTime @default(now())
+  Asset      Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  comments   Comment[] @relation("LabelComments")
+}
+
+model Comment {
   id        String   @id @default(cuid())
-  assetId   String
+  assetId   String?
+  labelId   String?
   userId    String?
-  x         Float
-  y         Float
-  w         Float
-  h         Float
-  title     String
-  note      String?
+  username  String
+  content   String
   createdAt DateTime @default(now())
-  Asset     Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  Asset     Asset?   @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  Label     Label?   @relation("LabelComments", fields: [labelId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  color       String   // Hex color for UI
+  icon        String?  // Icon identifier
+  createdAt   DateTime @default(now())
 }

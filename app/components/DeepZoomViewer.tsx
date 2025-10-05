@@ -3,16 +3,30 @@ import { useEffect, useRef } from "react";
 import OpenSeadragon from "openseadragon";
 
 type Rect = { x:number; y:number; w:number; h:number };
+type Label = {
+  id: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  title: string;
+  note?: string;
+};
+
 export default function DeepZoomViewer({
-  dziUrl, onAddRect,
-}: { dziUrl: string; onAddRect?: (r:Rect)=>void }) {
+  dziPath, labels = [], onAddRect,
+}: { 
+  dziPath: string; 
+  labels?: Label[];
+  onAddRect?: (r:Rect)=>void 
+}) {
   const elRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!elRef.current) return;
     const viewer = OpenSeadragon({
       element: elRef.current,
       prefixUrl: "https://openseadragon.github.io/openseadragon/images/",
-      tileSources: dziUrl,
+      tileSources: dziPath,
       showNavigator: true,
       gestureSettingsMouse: { clickToZoom: true, dblClickToZoom: true },
     });
@@ -32,6 +46,6 @@ export default function DeepZoomViewer({
     });
 
     return () => viewer.destroy();
-  }, [dziUrl]);
+  }, [dziPath]);
   return <div ref={elRef} className="h-[70vh] w-full bg-black rounded" />;
 }

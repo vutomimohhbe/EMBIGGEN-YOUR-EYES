@@ -15,6 +15,11 @@ While your cell phone screen can display about three million pixels of informati
 
 ## Usage
 
+<div style="display: flex; gap: 10px;">
+  <img src="./app_pic.png" alt="App Screenshot 1" width="250"/>
+  <img src="./app_pic2.png" alt="App Screenshot 2" width="250"/>
+  <img src="./globe_3d.png" alt="3D Globe View" width="250"/>
+</div>
 
 ## Setup
 

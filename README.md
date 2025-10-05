@@ -91,18 +91,7 @@ The application uses PostgreSQL with Prisma ORM. The database includes:
 
 The application supports Deep Zoom Image (DZI) format for high-resolution image viewing. Sample tiles are included in the `public/tiles/` directory.
 
-## Development
-
-<<<<<<< HEAD
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
->>>>>>> 514ee10 (Initial commit from Create Next App)
-=======
+## Tech stack
 The application is built with:
 - Next.js 15 with App Router
 - React 19
@@ -111,4 +100,8 @@ The application is built with:
 - Prisma ORM
 - OpenSeadragon for image viewing
 - PostgreSQL database
->>>>>>> c4a5660 (This is the first commit)
+
+## Contributions
+This is the team which from the left: Vutomi and right: Bonga
+
+![team_pic](./ar_team.png)
